@@ -1,3 +1,0 @@
-container:
-  image: kuber
-  tag: "v2.0"
