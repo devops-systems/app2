@@ -27,6 +27,8 @@ jobs:
       - name: Commit & Push changes
         working-directory: gitops
         run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "${{ secrets.GITOPS_EMAIL }}"
           git add .
-          git commit -m "$(date)"
+          git commit -m "$REPO_$BRANCH_$(date)"
           git push
