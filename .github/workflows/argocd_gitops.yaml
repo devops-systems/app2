@@ -1,0 +1,13 @@
+name: ARGOCD GITOPS
+
+on:
+  branch_protection_rule:
+    types: [created, deleted]
+
+jobs:
+  Test: 
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Get envs                 
+        run: |
+          echo $GITHUB_ENV
