@@ -1,4 +1,4 @@
-name: ARGOCD GITOPS
+name: ARGOCD GITOPS CREATE
 
 on:
   create
