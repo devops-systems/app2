@@ -19,9 +19,9 @@ jobs:
           ls -al
       - name: Generate variables                 
         run: |
-          export REPO=$(echo $GITHUB_REPOSITORY | cut -d "/" -f2)
-          export BRANCH=$GITHUB_REF_NAME
-          export IMAGE_TAG=$GITHUB_SHA
+          export REPO=$(echo $GITHUB_REPOSITORY | cut -d "/" -f2) >> $GITHUB_ENV
+          export BRANCH=$GITHUB_REF_NAME >> $GITHUB_ENV
+          export IMAGE_TAG=$GITHUB_SHA >> $GITHUB_ENV
       - name: Generate file 
         run: |
           curl -sfL -o /usr/local/bin/kyml https://github.com/frigus02/kyml/releases/download/v20210610/kyml_20210610_linux_amd64 && chmod +x /usr/local/bin/kyml
