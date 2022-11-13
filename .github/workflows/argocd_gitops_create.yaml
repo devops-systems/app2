@@ -9,4 +9,4 @@ jobs:
     steps:
       - name: Get envs                 
         run: |
-          echo $GITHUB_ENV
+          env
