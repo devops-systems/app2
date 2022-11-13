@@ -25,4 +25,8 @@ jobs:
       - name: Generate file 
         run: |
           curl -sfL -o /usr/local/bin/kyml https://github.com/frigus02/kyml/releases/download/v20210610/kyml_20210610_linux_amd64 && chmod +x /usr/local/bin/kyml
-          cat templates/argocd_gitops_features.yaml | kyml tmpl -e REPO -e BRANCH -e IMAGE_TAG | tee apps-features/$REPO-$BRANCH.yaml
+          cat templates/argocd_gitops_features.yaml | kyml tmpl -e REPO -e BRANCH -e IMAGE_TAG | tee apps-features/${{ env.REPO }}-${{ env.BRANCH }}.yaml
+        env:
+          REPO: ${{ env.REPO }}
+          BRANCH: ${{ env.BRANCH }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
