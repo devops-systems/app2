@@ -19,8 +19,8 @@ jobs:
           ls -al
       - name: Generate variables                 
         run: |
-          export REPO=$(echo $GITHUB_REPOSITORY | cut -d "/" -f2) >> $GITHUB_ENV
-          export BRANCH=$GITHUB_REF_NAME >> $GITHUB_ENV
+          export REPO=$(echo $GITHUB_REPOSITORY | cut -d "/" -f2)
+          export BRANCH=$GITHUB_REF_NAME
           export IMAGE_TAG="latest"
       - name: Get envs                 
         run: |
@@ -33,3 +33,7 @@ jobs:
           REPO: ${{ env.REPO }}
           BRANCH: ${{ env.BRANCH }}
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
+      - name: Get folders                 
+        run: |
+          ls -al
+          ll apps-features/
