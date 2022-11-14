@@ -24,6 +24,7 @@ jobs:
           then
             echo "ARGOCD_APPLICATION_TEMP_FILE=templates/argocd_gitops_dev.yaml" >> $GITHUB_ENV
             echo "ARGOCD_APPLICATION_FOLDER=apps-dev" >> $GITHUB_ENV
+            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
           else
             echo "ARGOCD_APPLICATION_TEMP_FILE=templates/argocd_gitops_features.yaml" >> $GITHUB_ENV
             echo "ARGOCD_APPLICATION_FOLDER=apps-features" >> $GITHUB_ENV
