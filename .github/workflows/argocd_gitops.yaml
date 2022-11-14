@@ -1,10 +1,12 @@
-name: ARGOCD GITOPS CREATE
+name: ARGOCD GITOPS
 
-on:
-  create
+on: # runs your workflow when someone creates/deletes a Git reference (Git branch or tag) in the workflow's repository.
+  - create
+  - delete
 
 jobs:
-  Test: 
+  gitops: 
+    name: ArgoCD GitOps
     runs-on: 'ubuntu-latest'
     steps:
       - name: Checkout ArgoCD GitOps repo
@@ -34,10 +36,17 @@ jobs:
           export BRANCH=${GITHUB_REF_NAME//[^[:alnum:]]/} # remove special characters
           echo "BRANCH=${BRANCH,,}" >> $GITHUB_ENV # move in lowercase
       - name: Generate file 
+        if: $GITHUB_EVENT_NAME == 'create'
         working-directory: gitops
         run: |
           envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < $ARGOCD_APPLICATION_TEMP_FILE > $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
           cat $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
+      - name: Delete file 
+        if: $GITHUB_EVENT_NAME == 'delete'
+        working-directory: gitops
+        run: |
+          cat $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
+          rm $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
       - name: Commit & Push changes to ArgoCD GitOps
         working-directory: gitops
         run: |
