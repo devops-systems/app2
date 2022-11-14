@@ -43,20 +43,20 @@ jobs:
         if: github.event_name == 'create'
         working-directory: gitops
         run: |
-          envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < $ARGOCD_APPLICATION_TEMP_FILE > $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
-          cat $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
+          envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < $ARGOCD_APPLICATION_TEMP_FILE > $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml
+          cat $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml
           
       - name: Delete file 
         if: github.event_name == 'delete'
         working-directory: gitops
         run: |
-          if [ -f "$ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml" ]
+          if [ -f "$ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml" ]
           then
-              echo "The file $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml exists."
-              cat $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
-              rm $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
+              echo "The file $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml exists."
+              cat $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml
+              rm $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml
           else
-            echo "The file $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml doesn't exists."
+            echo "The file $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml doesn't exists."
             exit 1 
           fi
           
@@ -65,6 +65,6 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "${{ secrets.GITOPS_EMAIL }}"
-          git add $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
+          git add $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml
           git commit -m "GitHub Actions Bot - $(date)"
           git push
