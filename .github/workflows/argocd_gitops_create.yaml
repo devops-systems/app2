@@ -22,8 +22,8 @@ jobs:
       - name: Generate file 
         working-directory: gitops
         run: |
-          curl -sfL -o /usr/local/bin/kyml https://github.com/frigus02/kyml/releases/download/v20210610/kyml_20210610_linux_amd64 && chmod +x /usr/local/bin/kyml
-          cat templates/argocd_gitops_features.yaml | kyml tmpl -e REPO -e BRANCH -e IMAGE_TAG | tee apps-features/$REPO-$BRANCH.yaml
+          envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < templates/argocd_gitops_features.yaml > apps-features/$REPO-$BRANCH.yaml
+          cat apps-features/$REPO-$BRANCH.yaml
       - name: Commit & Push changes to ArgoCD GitOps
         working-directory: gitops
         run: |
