@@ -23,16 +23,18 @@ jobs:
           then
             echo "ARGOCD_APPLICATION_TEMP_FILE=templates/argocd_gitops_prod.yaml" >> $GITHUB_ENV
             echo "ARGOCD_APPLICATION_FOLDER=apps-prod" >> $GITHUB_ENV
+            echo "CLEAN_BRANCH=${{ github.event.ref }}" >> $GITHUB_ENV # need for file name
           elif [ ${{ github.event.ref }} == 'dev' ]
           then
             echo "ARGOCD_APPLICATION_TEMP_FILE=templates/argocd_gitops_dev.yaml" >> $GITHUB_ENV
             echo "ARGOCD_APPLICATION_FOLDER=apps-dev" >> $GITHUB_ENV
             echo "IMAGE_TAG=latest" >> $GITHUB_ENV # need for envsubst templates
+            echo "CLEAN_BRANCH=${{ github.event.ref }}" >> $GITHUB_ENV # need for file name
           else
             echo "ARGOCD_APPLICATION_TEMP_FILE=templates/argocd_gitops_features.yaml" >> $GITHUB_ENV
             echo "ARGOCD_APPLICATION_FOLDER=apps-features" >> $GITHUB_ENV
             echo "IMAGE_TAG=latest" >> $GITHUB_ENV # need for envsubst templates
-            export CLEAN_BRANCH=${{ github.event.ref }} # need for envsubst templates
+            export CLEAN_BRANCH=${{ github.event.ref }} # need for envsubst templates and file name
             export CLEAN_BRANCH=${CLEAN_BRANCH//[^[:alnum:]]/} # remove special characters
             echo "CLEAN_BRANCH=${CLEAN_BRANCH,,}" >> $GITHUB_ENV # move in lowercase
           fi
