@@ -37,6 +37,10 @@ jobs:
         run: |
           ls -al
           env
+          echo "----------------------"
+          echo "${{ github.event.* }}"
+          echo "----------------------"
+          cat $GITHUB_EVENT_PATH
       - name: Generate file 
         if: github.event_name == 'create'
         working-directory: gitops
