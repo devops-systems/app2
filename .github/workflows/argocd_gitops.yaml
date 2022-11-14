@@ -32,9 +32,9 @@ jobs:
             echo "ARGOCD_APPLICATION_TEMP_FILE=templates/argocd_gitops_features.yaml" >> $GITHUB_ENV
             echo "ARGOCD_APPLICATION_FOLDER=apps-features" >> $GITHUB_ENV
             echo "IMAGE_TAG=latest" >> $GITHUB_ENV # need for envsubst templates
-            export NAMESPACE=${{ github.event.ref }} # need for envsubst templates
-            export NAMESPACE=${NAMESPACE//[^[:alnum:]]/} # remove special characters
-            echo "NAMESPACE=${NAMESPACE,,}" >> $GITHUB_ENV # move in lowercase
+            export CLEAN_BRANCH=${{ github.event.ref }} # need for envsubst templates
+            export CLEAN_BRANCH=${CLEAN_BRANCH//[^[:alnum:]]/} # remove special characters
+            echo "CLEAN_BRANCH=${CLEAN_BRANCH,,}" >> $GITHUB_ENV # move in lowercase
           fi
           echo "REPO=${{ github.event.repository.name }}" >> $GITHUB_ENV # need for envsubst templates
           echo "BRANCH=${{ github.event.ref }}" >> $GITHUB_ENV # need for envsubst templates
