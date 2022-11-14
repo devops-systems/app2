@@ -34,13 +34,13 @@ jobs:
           export BRANCH=${GITHUB_REF_NAME//[^[:alnum:]]/} # remove special characters
           echo "BRANCH=${BRANCH,,}" >> $GITHUB_ENV # move in lowercase
       - name: Generate file 
-        if: github.event.type == 'create'
+        if: github.event_name == 'create'
         working-directory: gitops
         run: |
           envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < $ARGOCD_APPLICATION_TEMP_FILE > $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
           cat $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
       - name: Delete file 
-        if: github.event.type == 'delete'
+        if: github.event_name == 'delete'
         working-directory: gitops
         run: |
           cat $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
