@@ -8,6 +8,7 @@ jobs:
     if: github.event.ref_type == 'branch' # checking that the action was not triggered by the tag
     runs-on: 'ubuntu-latest'
     steps:
+    
       - name: Checkout ArgoCD GitOps repo
         uses: actions/checkout@master
         with:
@@ -15,6 +16,7 @@ jobs:
           ref: 'main'
           token:  ${{ secrets.GITOPS_TOKEN }}
           path: 'gitops'
+          
       - name: Generate variables                 
         run: |
           if [ ${{ github.event.ref }} == 'main' ] 
@@ -30,17 +32,20 @@ jobs:
             echo "ARGOCD_APPLICATION_TEMP_FILE=templates/argocd_gitops_features.yaml" >> $GITHUB_ENV
             echo "ARGOCD_APPLICATION_FOLDER=apps-features" >> $GITHUB_ENV
             echo "IMAGE_TAG=latest" >> $GITHUB_ENV # need for envsubst templates
+            export NAMESPACE=${{ github.event.ref }} # need for envsubst templates
+            export NAMESPACE=${NAMESPACE//[^[:alnum:]]/} # remove special characters
+            echo "NAMESPACE=${NAMESPACE,,}" >> $GITHUB_ENV # move in lowercase
           fi
           echo "REPO=${{ github.event.repository.name }}" >> $GITHUB_ENV # need for envsubst templates
-          export BRANCH=${{ github.event.ref }} # need for envsubst templates
-          export BRANCH=${BRANCH//[^[:alnum:]]/} # remove special characters
-          echo "BRANCH=${BRANCH,,}" >> $GITHUB_ENV # move in lowercase
+          echo "BRANCH=${{ github.event.ref }}" >> $GITHUB_ENV # need for envsubst templates
+          
       - name: Generate file 
         if: github.event_name == 'create'
         working-directory: gitops
         run: |
           envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < $ARGOCD_APPLICATION_TEMP_FILE > $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
           cat $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml
+          
       - name: Delete file 
         if: github.event_name == 'delete'
         working-directory: gitops
@@ -54,6 +59,7 @@ jobs:
             echo "The file $ARGOCD_APPLICATION_FOLDER/$REPO-$BRANCH.yaml doesn't exists."
             exit 1 
           fi
+          
       - name: Commit & Push changes to ArgoCD GitOps
         working-directory: gitops
         run: |
