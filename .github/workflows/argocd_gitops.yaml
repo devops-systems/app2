@@ -35,9 +35,6 @@ jobs:
           export BRANCH=${{ github.event.ref }} # need for envsubst templates
           export BRANCH=${BRANCH//[^[:alnum:]]/} # remove special characters
           echo "BRANCH=${BRANCH,,}" >> $GITHUB_ENV # move in lowercase
-      - name: TEST               
-        run: |
-          echo ${{ github.event.ref }}
       - name: Generate file 
         if: github.event_name == 'create'
         working-directory: gitops
