@@ -31,33 +31,33 @@ jobs:
             echo "ARGOCD_APPLICATION_FOLDER=apps-features" >> $GITHUB_ENV
             echo "IMAGE_TAG=latest" >> $GITHUB_ENV
           fi
-          export BRANCH=${${{ github.event.ref }}//[^[:alnum:]]/} # remove special characters
-          echo "BRANCH=${BRANCH,,}" >> $GITHUB_ENV # move in lowercase
       - name: TEST               
         run: |
-          ls -al
-          env
-          echo "----------------------"
-          cat $GITHUB
-          echo "----------------------"
-          cat $GITHUB_EVENT_PATH
+          echo ${{ github.event.ref }}
       - name: Generate file 
         if: github.event_name == 'create'
         working-directory: gitops
         run: |
-          envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < $ARGOCD_APPLICATION_TEMP_FILE > $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-$BRANCH.yaml
-          cat $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-$BRANCH.yaml
+          envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < $ARGOCD_APPLICATION_TEMP_FILE > $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-${{ github.event.ref }}.yaml
+          cat $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-${{ github.event.ref }}.yaml
       - name: Delete file 
         if: github.event_name == 'delete'
         working-directory: gitops
         run: |
-          cat $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-$BRANCH.yaml
-          rm $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-$BRANCH.yaml
+          if [ -f "$ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-${{ github.event.ref }}.yaml" ]
+          then
+              echo "The file $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-${{ github.event.ref }}.yaml exists."
+              cat $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-${{ github.event.ref }}.yaml
+              rm $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-${{ github.event.ref }}.yaml
+          else
+            echo "The file $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-${{ github.event.ref }}.yaml doesn't exists."
+            exit 1 
+          fi
       - name: Commit & Push changes to ArgoCD GitOps
         working-directory: gitops
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "${{ secrets.GITOPS_EMAIL }}"
-          git add $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-$BRANCH.yaml
+          git add $ARGOCD_APPLICATION_FOLDER/${{ github.event.repository.name }}-${{ github.event.ref }}.yaml
           git commit -m "GitHub Actions Bot - $(date)"
           git push
