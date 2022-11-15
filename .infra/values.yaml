@@ -3,4 +3,4 @@ container:
   tag: "v2.0"
   repository: bokovets
 
-replicaCount: 1
+replicaCount: 4
