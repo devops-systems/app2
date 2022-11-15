@@ -1,7 +1,11 @@
 name: ARGOCD GITOPS
 
-on: [create, delete] # runs your workflow when someone creates/deletes a Git reference (Git branch or tag) in the workflow's repository.
-
+on: 
+  workflow_dispatch: # manual run of action
+  create: # runs your workflow when someone creates a Git reference (Git branch or tag) in the workflow's repository.
+  delete: # runs your workflow when someone deletes a Git reference (Git branch or tag) in the workflow's repository.
+  
+  
 jobs:
   gitops: 
     name: ArgoCD GitOps
