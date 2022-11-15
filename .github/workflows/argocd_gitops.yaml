@@ -41,14 +41,14 @@ jobs:
           echo "REPO=${{ github.event.repository.name }}" >> $GITHUB_ENV # need for envsubst templates
           echo "BRANCH=${{ github.event.ref }}" >> $GITHUB_ENV # need for envsubst templates
           
-      - name: Generate file 
+      - name: Generate application file 
         if: github.event_name == 'create'
         working-directory: gitops
         run: |
           envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < $ARGOCD_APPLICATION_TEMP_FILE > $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml
           cat $ARGOCD_APPLICATION_FOLDER/$REPO-$CLEAN_BRANCH.yaml
           
-      - name: Delete file 
+      - name: Delete application file 
         if: github.event_name == 'delete'
         working-directory: gitops
         run: |
