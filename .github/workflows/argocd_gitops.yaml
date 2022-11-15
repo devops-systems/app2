@@ -18,6 +18,7 @@ jobs:
             echo ${{ github.event.repository.name }}
             echo ${{ github.event_name }}
             echo ${{ github.event.ref_type }}
+            echo $GITHUB_EVENT_PATH
         
 #       - name: Checkout ArgoCD GitOps repo
 #         uses: actions/checkout@master
