@@ -9,7 +9,7 @@ on:
 jobs:
   gitops: 
     name: ArgoCD GitOps
-    if: github.event.ref_type == 'branch' # checking that action was not triggered by tag
+    if: github.event.ref_type != 'tag' # checking that action was not triggered by tag
     runs-on: 'ubuntu-latest'
     steps:
     
