@@ -1,6 +1,6 @@
 container:
   image: kuber
-  tag: "v2.0"
+  tag: "v2.0" # change only for prod
   repository: bokovets
 
-replicaCount: 4
+replicaCount: 1
